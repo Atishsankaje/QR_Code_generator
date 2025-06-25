@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename="style.css")}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-300">
+    <div class="container mx-auto p-5">
+        <h1 class="text-2xl font-bold mb-4 text-center">Your QR Code</h1>
+        <img src="data:image/png;base64,{{img_str}}" alt="image not found" class="mx-auto" id="image">
+    </div>
+    <div class="text-center">
+        <a href="/" class="block text-center text-blue-500 font-bold">Generate another QR Code</a>
+        <button onclick="download()" class="bg-blue-500 px-4 py-2 rounded text-white mt-4"><i class="fa-solid fa-download"></i> Download QR Code</button>
+        <button onclick="Share()" class="bg-green-500 px-4 py-2 rounded text-white mt-4"><i class="fa-solid fa-share-from-square"></i> Share QR Code</button>
+        <script src="https://example.com/fontawesome/v6.6.0/js/all.js"data-auto-replace-svg="nest"></script>
+    </div>
+    <script>
+        download=()=>{
+            const imagename=document.getElementById('image');
+            const url=imagename.src;
+            const a=document.createElement('a');
+            a.href=url;
+            a.download='qrcode.png'
+            document.body.appendChild(a);
+            a.click()
+            document.body.removeChild(a);
+        }
+        Share=()=>{
+            const imagename=document.getElementById('image');
+            const url=imagename.src;
+            fetch(url).then(res =>res.blob).then(blob=>
+                {
+                    const file=new File([blob],'qrcode.png',{type:'image/png'});
+                    if(navigator.share){
+                        navigator.share(
+                            {
+                                title:'QR Code',
+                                text:'This is your QR Code',
+                                files:[file]
+                            }
+                        )
+                    }
+                }
+            )
+        }
+    </script>
+</body>
+</html>
